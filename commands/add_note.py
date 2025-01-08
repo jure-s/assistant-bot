@@ -1,6 +1,6 @@
 from models.contact import Contact
 
-def add_note_interactive(contacts):
+def add_note_interactive(contacts) -> str:
     """
     Інтерактивне додавання нотатки до контакту.
     """

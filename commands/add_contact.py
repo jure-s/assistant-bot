@@ -5,6 +5,7 @@ from colorama import Fore
 
 
 def validate_field(prompt, validation_func=None, required=False):
+
     while True:
         value = input(Fore.YELLOW + prompt).strip()
         if not value and not required:
@@ -18,6 +19,7 @@ def validate_field(prompt, validation_func=None, required=False):
 
 
 def add_contact_interactive(contacts):
+
     name = validate_field("Enter name: ", required=True)
     phone = validate_field("Enter phone: ", validate_phone, required=True)
     email = validate_field("Enter email: ", validate_email)
@@ -35,7 +37,6 @@ def add_contact_interactive(contacts):
         if note_content
         else []
     )
-
     if name in contacts:
         return Fore.RED + f"Contact {name} already exists."
 

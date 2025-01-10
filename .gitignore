@@ -32,3 +32,5 @@ Thumbs.db
 
 # Local settings
 *.env
+.pull_requests
+

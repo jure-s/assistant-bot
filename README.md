@@ -49,7 +49,7 @@ Personal Assistant Bot — це консольний застосунок, як�
 ```bash
 
 git clone https://github.com/your-username/personal-assistant.git
-cd personal-assistant
+
 
 ### 2. Створення віртуального середовища
 

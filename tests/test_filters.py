@@ -1,9 +1,5 @@
 import unittest
-from commands.filter_contacts import (
-    filter_contacts_by_tag,
-    filter_contacts_by_birthday_range,
-    filter_contacts_by_query,
-)
+from commands.filter_contacts import filter_contacts_by_tag, filter_contacts_by_query
 from models.contact import Contact
 from datetime import datetime
 
@@ -18,11 +14,6 @@ class TestFilters(unittest.TestCase):
     def test_filter_by_tag(self):
         result = filter_contacts_by_tag(self.contacts, "tag1")
         self.assertIn("John", result)
-
-    def test_filter_by_birthday_range(self):
-        result = filter_contacts_by_birthday_range(self.contacts, 365)
-        self.assertIn("John", result)
-        self.assertIn("Jane", result)
 
     def test_filter_by_query(self):
         result = filter_contacts_by_query(self.contacts, "John")

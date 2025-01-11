@@ -1,14 +1,13 @@
-from commands.utils import validate_field
-
-def search_notes_interactive(contacts):
+def search_notes_across_contacts(contacts):
     """
-    Інтерактивний пошук нотаток у контакті.
+    Пошук нотаток по всіх контактах.
     """
-    name = validate_field("Enter the name of the contact to search notes for: ", required=True)
-    contact = contacts.get(name)
-    if not contact:
-        return f"Contact {name} not found."
+    query = input("Enter the search query: ").strip().lower()
+    results = []
 
-    query = validate_field("Enter the search query: ", required=True).lower()
-    results = contact.search_notes(query)
-    return "\n".join(str(note) for note in results) if results else "No notes found."
+    for contact in contacts.values():
+        for note in contact.notes:
+            if query in note.content.lower() or query in [tag.lower() for tag in note.tags]:
+                results.append(f"{contact}")
+
+    return "\n".join(results) if results else "No notes found matching your query."

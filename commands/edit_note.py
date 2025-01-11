@@ -1,18 +1,20 @@
-from models.contact import Contact
+from commands.utils import validate_field
 
-def edit_note_interactive(contacts) -> str:
+def edit_note_interactive(contacts):
     """
     Інтерактивне редагування нотатки контакту.
     """
-    name = input("Enter the name of the contact whose note you want to edit: ").strip()
+    name = validate_field("Enter the name of the contact whose note you want to edit: ", required=True)
     contact = contacts.get(name)
     if not contact:
         return f"Contact {name} not found."
 
-    index = int(input("Enter the index of the note to edit: ").strip())
-    new_content = input("Enter the new content for the note: ").strip()
     try:
+        index = int(validate_field("Enter the index of the note to edit: ", required=True))
+        new_content = validate_field("Enter the new content for the note: ", required=True)
         contact.notes[index].content = new_content
         return f"Note updated for {name}."
     except IndexError:
-        return "Note not found."
+        return f"Note with index {index} not found for contact {name}."
+    except ValueError:
+        return "Invalid input. Please provide a valid index and content."

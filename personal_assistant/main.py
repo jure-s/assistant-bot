@@ -6,14 +6,14 @@ from commands.search_contact import search_contact_interactive
 from commands.add_note import add_note_interactive
 from commands.edit_note import edit_note_interactive
 from commands.delete_note import delete_note_interactive
-from commands.search_notes import search_notes_interactive
+from commands.search_notes import search_notes_across_contacts
 from commands.show_all_contacts import show_all_contacts
 from commands.help import help_command
 from commands.birthdays import get_upcoming_birthdays
 from commands.filter_contacts import (
     filter_contacts_by_tag,
-    filter_contacts_by_birthday_range,
     filter_contacts_by_query,
+    filter_contacts_by_birthday_date,
 )
 from commands.sort_contacts import sort_contacts
 from storage.file_storage import save_data, load_data
@@ -27,10 +27,11 @@ DEBUG_MODE = False
 
 def debug_print(message):
     """
-    Виводить повідомлення лише у режимі DEBUG.
+    Функція для виводу налагоджувальних повідомлень. 
+    У режимі DEBUG виводяться повідомлення.
     """
     if DEBUG_MODE:
-        print(Fore.MAGENTA + f"DEBUG: {message}")
+        pass  # Відключено вивід налагоджувальних повідомлень
 
 # Список доступних команд
 AVAILABLE_COMMANDS = [
@@ -98,9 +99,29 @@ def main():
         elif user_input == "search-contact":
             print(search_contact_interactive(contacts))
 
+        elif user_input == "add-note":
+            print(add_note_interactive(contacts))
+
+        elif user_input == "edit-note":
+            print(edit_note_interactive(contacts))
+
+        elif user_input == "delete-note":
+            print(delete_note_interactive(contacts))
+
+        elif user_input == "search-note":
+            print(search_notes_across_contacts(contacts))
+
         elif user_input == "sort":
             field = input(Fore.YELLOW + "Enter the field to sort by (name, phone, email, birthday, address, notes, tags): ").strip().lower()
-            print(Fore.CYAN + sort_contacts(contacts, field))
+            sorted_contacts = sort_contacts(contacts, field)
+            if sorted_contacts:
+                # Оновлення словника контактів з відсортованими даними
+                contacts = {contact.name: contact for contact in sorted_contacts}
+                print(Fore.CYAN + "\n".join(str(contact) for contact in sorted_contacts))
+                save_data({"contacts": contacts})  # Збереження після сортування
+                print(Fore.GREEN + "Contacts sorted and saved.")
+            else:
+                print(Fore.RED + f"No contacts found for sorting by field '{field}'.")
 
         elif user_input == "birthdays":
             days = input(Fore.YELLOW + "Enter the number of days: ").strip()
@@ -115,12 +136,11 @@ def main():
             print(Fore.CYAN + filter_contacts_by_tag(contacts, tag))
 
         elif user_input == "filter-birthday":
-            days = input(Fore.YELLOW + "Enter the number of days: ").strip()
+            date_str = input(Fore.YELLOW + "Enter the date (DD.MM.YYYY): ").strip()
             try:
-                days = int(days)
-                print(Fore.CYAN + filter_contacts_by_birthday_range(contacts, days))
-            except ValueError:
-                print(Fore.RED + "Invalid number of days. Please enter an integer.")
+                print(Fore.CYAN + filter_contacts_by_birthday_date(contacts, date_str))
+            except ValueError as e:
+                print(Fore.RED + f"Error: {e}")
 
         elif user_input == "filter-query":
             query = input(Fore.YELLOW + "Enter the query to filter by: ").strip()
